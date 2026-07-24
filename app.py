@@ -1,6 +1,6 @@
 import os
-import pg8000.native
-from urllib.parse import urlparse
+import psycopg2
+import psycopg2.extras
 from flask import Flask, render_template, request, redirect, session, send_file, g
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -30,19 +30,6 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "1234")
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 
-def _connect():
-    """DATABASE_URL (postgresql://user:pass@host:port/dbname) qooduun
-    pg8000.native.Connection tokko banuu."""
-    parsed = urlparse(DATABASE_URL)
-    return pg8000.native.Connection(
-        user=parsed.username,
-        password=parsed.password,
-        host=parsed.hostname,
-        port=parsed.port or 5432,
-        database=parsed.path.lstrip("/"),
-    )
-
-
 class DBWrapper:
     """sqlite3.connection fakkeessee db.execute(...).fetchone()/fetchall()
     akka fayyadamnu kan dandeessisu wrapper - kunis code kaan (routes) hunda
@@ -50,40 +37,25 @@ class DBWrapper:
 
     def __init__(self, conn):
         self.conn = conn
-        self._last_rows = None
-        self._last_cols = None
-
-    def _to_named(self, query, params):
-        """"?" placeholder-oota gara :p0, :p1 ... (pg8000 named-param
-        syntax) jijjiiruu."""
-        kwargs = {}
-        for i, p in enumerate(params):
-            key = f"p{i}"
-            query = query.replace("?", f":{key}", 1)
-            kwargs[key] = p
-        return query, kwargs
+        self._cur = None
 
     def execute(self, query, params=()):
-        query, kwargs = self._to_named(query, params)
-        self._last_rows = self.conn.run(query, **kwargs)
-        self._last_cols = (
-            [c["name"] for c in self.conn.columns] if self.conn.columns else []
-        )
+        query = query.replace("?", "%s")
+        self._cur = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        self._cur.execute(query, params)
         return self
 
     def executemany(self, query, seq_of_params):
-        for params in seq_of_params:
-            self.execute(query, params)
+        query = query.replace("?", "%s")
+        cur = self.conn.cursor()
+        cur.executemany(query, seq_of_params)
+        self._cur = cur
 
     def fetchone(self):
-        if not self._last_rows:
-            return None
-        return dict(zip(self._last_cols, self._last_rows[0]))
+        return self._cur.fetchone()
 
     def fetchall(self):
-        if not self._last_rows:
-            return []
-        return [dict(zip(self._last_cols, row)) for row in self._last_rows]
+        return self._cur.fetchall()
 
     def commit(self):
         self.conn.commit()
@@ -92,7 +64,7 @@ class DBWrapper:
 def get_db():
     """Request tokkotti connection database tokko qofa banuu/fayyadamuu."""
     if "db" not in g:
-        raw_conn = _connect()
+        raw_conn = psycopg2.connect(DATABASE_URL)
         g.db = DBWrapper(raw_conn)
     return g.db
 
@@ -123,8 +95,9 @@ DEFAULT_SCHOOL_ACCOUNTS = {
 
 def init_db():
     """Table-oota yoo hin jiraatin uumuu (yeroo app jalqabu tokko qofa)."""
-    conn = _connect()
-    conn.run(
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute(
         """
         CREATE TABLE IF NOT EXISTS students (
             id SERIAL PRIMARY KEY,
@@ -138,7 +111,7 @@ def init_db():
         )
         """
     )
-    conn.run(
+    cur.execute(
         """
         CREATE TABLE IF NOT EXISTS school_accounts (
             school TEXT PRIMARY KEY,
@@ -151,14 +124,13 @@ def init_db():
 
     # Mana barnootaa tokkoon tokkoof account jalqabaa (yoo hin jiraatin qofa) galchuu
     for school, (username, password) in DEFAULT_SCHOOL_ACCOUNTS.items():
-        conn.run(
-            "INSERT INTO school_accounts (school, username, password) VALUES "
-            "(:school, :username, :password) ON CONFLICT (school) DO NOTHING",
-            school=school,
-            username=username,
-            password=password,
+        cur.execute(
+            "INSERT INTO school_accounts (school, username, password) VALUES (%s, %s, %s) "
+            "ON CONFLICT (school) DO NOTHING",
+            (school, username, password),
         )
     conn.commit()
+    cur.close()
     conn.close()
 
 
