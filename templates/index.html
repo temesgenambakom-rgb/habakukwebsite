@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habakuk School</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .school-box {
+            width: 420px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #999;
+            text-align: center;
+        }
+
+        .school-box h1 {
+            color: green;
+            margin-bottom: 5px;
+        }
+
+        .school-box p.subtitle {
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .school-list a {
+            display: block;
+            text-decoration: none;
+            background: green;
+            color: white;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .school-list a:hover {
+            background: darkgreen;
+        }
+
+        .admin-link {
+            display: block;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+            text-decoration: none;
+        }
+
+        .admin-link:hover {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="school-box">
+    <h1>Habakuk School</h1>
+    <p class="subtitle">Mana barnootaa keessan filadhaa</p>
+
+    <div class="school-list">
+        {% for s in schools %}
+        <a href="{{ url_for('school_login', school_id=loop.index0) }}">🏫 {{ s }}</a>
+        {% endfor %}
+    </div>
+
+    <a class="admin-link" href="/login">🔑 Admin Seensa</a>
+</div>
+
+</body>
+</html>
