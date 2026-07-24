@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galmeessi Barataa</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .form-box {
+            width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #999;
+        }
+
+        h1 {
+            text-align: center;
+            color: green;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h1>Galmeessi Barataa</h1>
+
+<form method="POST" action="/register" onsubmit="return checkForm()">
+
+    <input type="text" name="name" placeholder="Maqaa barataa" required>
+
+
+    <select name="gender" required>
+        <option value="">Koorniyaa filadhu</option>
+        <option value="Dhiira">Dhiira</option>
+        <option value="Dhalaa">Dhalaa</option>
+    </select>
+
+
+    <select name="grade" required>
+        <option value="">Kutaa filadhu</option>
+        <option value="9">Kutaa 9</option>
+        <option value="10">Kutaa 10</option>
+        <option value="11">Kutaa 11</option>
+        <option value="12">Kutaa 12</option>
+    </select>
+
+
+    <select name="department" required>
+        <option value="">Department filadhu</option>
+        <option value="Hin qabu">Hin qabu</option>
+        <option value="Natural">Natural</option>
+        <option value="Social">Social</option>
+    </select>
+
+
+    {% if locked_school %}
+    <input type="text" value="{{ locked_school }}" disabled>
+    {% else %}
+    <select name="school" required>
+        <option value="">Mana Barnootaa filadhu</option>
+        {% for s in schools %}
+        <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+
+    <input type="text" name="guardian" placeholder="Wabii" required>
+
+
+    <input type="text" name="phone" placeholder="Lakkoofsa bilbila" required>
+
+
+    <button type="submit">Galmeessi</button>
+
+</form>
+
+
+<a class="back" href="/dashboard">
+    ← Dashboard deebi'i
+</a>
+
+
+</div>
+
+
+<script>
+
+function checkForm(){
+
+    let fields = document.querySelectorAll("input, select");
+
+    for(let field of fields){
+
+        if(field.value.trim() === ""){
+
+            alert("Galmeen hin xumuramne. Odeeffannoo hunda guuti.");
+
+            return false;
+        }
+    }
+
+    return true;
+}
+
+</script>
+
+
+</body>
+</html>

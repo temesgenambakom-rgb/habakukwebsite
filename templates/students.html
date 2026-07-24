@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanneen Galmaa'an</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #aaa;
+            overflow-x: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: green;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: green;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .count-info {
+            text-align: center;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a, .pagination span {
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .pagination a {
+            background: green;
+            color: white;
+        }
+
+        .pagination a:hover {
+            background: darkgreen;
+        }
+
+        .pagination .disabled {
+            background: #ccc;
+            color: #777;
+            pointer-events: none;
+        }
+
+        .pagination .page-info {
+            color: #333;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .search-box input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            background: darkgreen;
+        }
+
+        .search-box .clear-link {
+            padding: 10px 16px;
+            background: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-box select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .edit-btn {
+            background: #0d6efd;
+        }
+
+        .edit-btn:hover {
+            background: #0b5ed7;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Kanneen Galmaa'an</h1>
+
+<p class="count-info">Waliigala barattoota: {{ total_students }}</p>
+
+<form class="search-box" method="GET" action="/students">
+    <input type="text" name="q" placeholder="Maqaa, kutaa, department ykn bilbilaan barbaadi..." value="{{ query }}">
+
+    {% if not locked_school %}
+    <select name="school">
+        <option value="">Mana Barnootaa hunda</option>
+        {% for s in schools %}
+        <option value="{{ s }}" {% if school_filter == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <button type="submit">🔍 Barbaadi</button>
+    {% if query or school_filter %}
+    <a class="clear-link" href="/students">✖ Haqi</a>
+    {% endif %}
+</form>
+
+<table>
+
+<tr>
+    <th>ID</th>
+    <th>Maqaa Barataa</th>
+    <th>Koorniyaa</th>
+    <th>Kutaa</th>
+    <th>Department</th>
+    <th>Mana Barnootaa</th>
+    <th>Wabii</th>
+    <th>Lakkoofsa Bilbila</th>
+    <th>Tarkaanfii</th>
+</tr>
+
+
+{% for student in students %}
+
+<tr>
+    <td>{{ student.id }}</td>
+    <td>{{ student.name }}</td>
+    <td>{{ student.gender }}</td>
+    <td>{{ student.grade }}</td>
+    <td>{{ student.department }}</td>
+    <td>{{ student.school }}</td>
+    <td>{{ student.guardian }}</td>
+    <td>{{ student.phone }}</td>
+    <td>
+        <div class="actions">
+            <a class="edit-btn" href="/students/edit/{{ student.id }}">✏️ Edit</a>
+            <form method="POST" action="/students/delete/{{ student.id }}" onsubmit="return confirm('Barataa {{ student.name }} haquu barbaaddaa?');" style="display:inline;">
+                <button type="submit" class="delete-btn">🗑️ Delete</button>
+            </form>
+        </div>
+    </td>
+</tr>
+
+{% endfor %}
+
+{% if not students %}
+<tr>
+    <td colspan="9" class="no-results">Barataan argame hin jiru.</td>
+</tr>
+{% endif %}
+
+
+</table>
+
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="/students?page={{ page - 1 }}{% if query %}&q={{ query }}{% endif %}{% if school_filter %}&school={{ school_filter }}{% endif %}">← Duraa</a>
+    {% else %}
+        <span class="disabled">← Duraa</span>
+    {% endif %}
+
+    <span class="page-info">Fuula {{ page }} / {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="/students?page={{ page + 1 }}{% if query %}&q={{ query }}{% endif %}{% if school_filter %}&school={{ school_filter }}{% endif %}">Itti aanu →</a>
+    {% else %}
+        <span class="disabled">Itti aanu →</span>
+    {% endif %}
+</div>
+
+
+<a class="back" href="/dashboard">
+    ← Dashboard deebi'i
+</a>
+
+
+</div>
+
+</body>
+</html>
