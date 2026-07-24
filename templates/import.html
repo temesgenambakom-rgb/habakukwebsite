@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barattoota Excel-iin Galmeessi</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .form-box {
+            width: 480px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #999;
+        }
+
+        h1 {
+            text-align: center;
+            color: green;
+        }
+
+        .step {
+            background: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .step h3 {
+            margin-top: 0;
+            color: #198754;
+        }
+
+        .template-link {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .template-link:hover {
+            background: #0b5ed7;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+
+        .error-msg {
+            color: #dc3545;
+            background: rgba(220,53,69,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .success-msg {
+            color: #198754;
+            background: rgba(25,135,84,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .skipped-box {
+            background: rgba(220,53,69,0.08);
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .skipped-box ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .skipped-box li {
+            font-size: 13px;
+            color: #842029;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-box">
+
+    <h1>Barattoota Excel-iin Galmeessi</h1>
+
+    {% if error %}
+    <p class="error-msg">{{ error }}</p>
+    {% endif %}
+
+    {% if success_count is defined %}
+    <p class="success-msg">✅ Barattoota {{ success_count }} milkaa'inaan galmaa'an.</p>
+
+    {% if skipped_rows %}
+    <div class="skipped-box">
+        <strong>Row-oota darbaman ({{ skipped_rows|length }}):</strong>
+        <ul>
+            {% for reason in skipped_rows %}
+            <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <div class="step">
+        <h3>Tarkaanfii 1: Template buufadhaa</h3>
+        <p>Duraan dursaa template Excel duwwaa buufadhaa, barattoota hunda achi keessatti guutaa.</p>
+        <a class="template-link" href="/students/template">⬇️ Template Buufadhaa</a>
+    </div>
+
+    <div class="step">
+        <h3>Tarkaanfii 2: Deebisanii Upload godhaa</h3>
+        <p>Erga guutanii booda, file sana asitti upload godhaa.</p>
+
+        <form method="POST" action="/students/import" enctype="multipart/form-data">
+            <input type="file" name="excel_file" accept=".xlsx,.xlsm" required>
+            <button type="submit">📤 Import Godhi</button>
+        </form>
+    </div>
+
+    <a class="back" href="/students">
+        ← Kanneen Galmaa'an deebi'i
+    </a>
+
+</div>
+
+</body>
+</html>

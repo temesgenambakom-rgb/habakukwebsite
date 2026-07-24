@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habakuk Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background-image: linear-gradient(
+                rgba(0, 100, 0, 0.5),
+                rgba(0, 0, 0, 0.5)
+            ), url("/static/myphoto.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-box {
+            width: 350px;
+            padding: 30px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 15px black;
+        }
+
+        h1 {
+            color: green;
+            margin-bottom: 25px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 7px;
+            background: green;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        .logout {
+            background: red;
+        }
+
+        .logout:hover {
+            background: darkred;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .social-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .social-links a:hover {
+            color: green;
+        }
+
+        .contact-phone {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .social-links a svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="dashboard-box">
+
+    <h1>Habakuk Dashboard</h1>
+
+    {% if school_name %}
+    <p style="color:#333; margin-top:-15px; margin-bottom: 20px;">🏫 {{ school_name }}</p>
+    {% endif %}
+
+    <a href="/register">
+        <button>📝 Galmeessi</button>
+    </a>
+
+    <a href="/students/import">
+        <button>📥 Excel-iin Galmeessi</button>
+    </a>
+
+    <a href="/students">
+        <button>👨‍🎓 Kanneen Galmaa'an</button>
+    </a>
+
+    <a href="/export">
+        <button>📊 Excel Buusi</button>
+    </a>
+
+    {% if is_admin %}
+    <a href="/admin/passwords">
+        <button style="background:#0d6efd;">🔑 Password Manneen Barnootaa</button>
+    </a>
+    {% endif %}
+
+    <a href="/logout">
+        <button class="logout">🚪 Logout</button>
+    </a>
+
+    <div class="social-footer">
+        <div class="social-links">
+            <a href="https://t.me/habakuk24" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="120" r="120" fill="#29a9eb"/><path fill="#fff" d="M53 118l125-48c6-2 11 1 9 10l-21 100c-2 8-7 10-14 6l-38-28-18 18c-2 2-4 4-8 4l3-40 74-67c3-3-1-4-4-2l-91 57-39-12c-8-3-8-9 2-13z"/></svg>
+                Telegram
+            </a>
+            <a href="https://www.youtube.com/@ambakomtemesgens" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 17" xmlns="http://www.w3.org/2000/svg"><path fill="#ff0000" d="M23.5 2.6A3 3 0 0 0 21.4.5C19.5 0 12 0 12 0S4.5 0 2.6.5A3 3 0 0 0 .5 2.6 31 31 0 0 0 0 8.4a31 31 0 0 0 .5 5.7 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-5.7 31 31 0 0 0-.5-5.8z"/><path fill="#fff" d="M9.6 12V4.8l6.4 3.6z"/></svg>
+                YouTube
+            </a>
+        </div>
+        <p class="contact-phone">📞 0924741695</p>
+    </div>
+
+</div>
+
+</body>
+</html>

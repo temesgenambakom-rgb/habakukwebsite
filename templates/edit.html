@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barataa Fooyyessi</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .form-box {
+            width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #999;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0b5ed7;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h1>Barataa Fooyyessi</h1>
+
+<form method="POST" action="/students/edit/{{ student.id }}" onsubmit="return checkForm()">
+
+    <input type="text" name="name" placeholder="Maqaa barataa" value="{{ student.name }}" required>
+
+    <select name="gender" required>
+        <option value="">Koorniyaa filadhu</option>
+        <option value="Dhiira" {% if student.gender == "Dhiira" %}selected{% endif %}>Dhiira</option>
+        <option value="Dhalaa" {% if student.gender == "Dhalaa" %}selected{% endif %}>Dhalaa</option>
+    </select>
+
+    <select name="grade" required>
+        <option value="">Kutaa filadhu</option>
+        <option value="9" {% if student.grade == "9" %}selected{% endif %}>Kutaa 9</option>
+        <option value="10" {% if student.grade == "10" %}selected{% endif %}>Kutaa 10</option>
+        <option value="11" {% if student.grade == "11" %}selected{% endif %}>Kutaa 11</option>
+        <option value="12" {% if student.grade == "12" %}selected{% endif %}>Kutaa 12</option>
+    </select>
+
+    <select name="department" required>
+        <option value="">Department filadhu</option>
+        <option value="Hin qabu" {% if student.department == "Hin qabu" %}selected{% endif %}>Hin qabu</option>
+        <option value="Natural" {% if student.department == "Natural" %}selected{% endif %}>Natural</option>
+        <option value="Social" {% if student.department == "Social" %}selected{% endif %}>Social</option>
+    </select>
+
+    {% if locked_school %}
+    <input type="text" value="{{ locked_school }}" disabled>
+    {% else %}
+    <select name="school" required>
+        <option value="">Mana Barnootaa filadhu</option>
+        {% for s in schools %}
+        <option value="{{ s }}" {% if student.school == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <input type="text" name="guardian" placeholder="Wabii" value="{{ student.guardian }}" required>
+
+    <input type="text" name="phone" placeholder="Lakkoofsa bilbila" value="{{ student.phone }}" required>
+
+    <button type="submit">💾 Olkaa'i</button>
+
+</form>
+
+<a class="back" href="/students">
+    ← Kanneen Galmaa'an deebi'i
+</a>
+
+</div>
+
+<script>
+function checkForm(){
+    let fields = document.querySelectorAll("input, select");
+    for(let field of fields){
+        if(field.value.trim() === ""){
+            alert("Odeeffannoo hunda guuti.");
+            return false;
+        }
+    }
+    return true;
+}
+</script>
+
+</body>
+</html>
