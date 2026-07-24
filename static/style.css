@@ -1,0 +1,52 @@
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:url("myphoto.jpg") center/cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.login-box{
+    width:320px;
+    background:rgba(255,255,255,0.9);
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 0 15px rgba(0,0,0,.3);
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#198754;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#157347;
+}
+
+h1{
+    color:#198754;
+}
+
+.error-msg{
+    color:#dc3545;
+    background:rgba(220,53,69,0.1);
+    padding:8px;
+    border-radius:5px;
+    margin:10px 0;
+    font-size:14px;
+}
